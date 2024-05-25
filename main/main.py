@@ -62,5 +62,5 @@ def add_comment(recipe_id):
 		db.session.commit()
 
 		flash("comments added successfully ", 'success')
-		return "add success comments "
+		return "add success comments here"
 	return "add comments"
