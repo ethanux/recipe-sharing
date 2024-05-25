@@ -28,9 +28,13 @@ migrate = Migrate(app, db)
 
 # Importing the auth blueprint from the auth module.
 from auth.auth import auth 
+from main.main import main
 
 # Registering the auth blueprint with the app, with a URL prefix '/auth'.
 app.register_blueprint(auth, url_prefix='/auth')
+# Registering the main blueprint with the app, with a URL prefix '/home'.
+app.register_blueprint(main, url_prefix='/home')
+
 
 @login_manager.user_loader
 def load_user(user_id):

@@ -43,7 +43,7 @@ def login():
                 if password == user.password:
                     login_user(user)
                     flash('Logged in successfully', 'success')
-                    return redirect(url_for('auth.home'))
+                    return redirect(url_for('main.add_recipe'))
                 else:
                     # If password is incorrect, show error message
                     flash('Password is incorrect', 'danger')
