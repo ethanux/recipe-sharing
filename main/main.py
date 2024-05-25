@@ -27,7 +27,7 @@ def add_recipe():
 @main.route('/add-ingrediants', methods=['POST', 'GET'])
 def add_ingrediants():
 	if not current_user.is_authenticated:
-		flash('Logg in first to visit page', 'warning')
+		flash('Log in first to visit page', 'warning')
 		return redirect(url_for('auth.login'))
 
 	if requst.method == "POST":
@@ -40,3 +40,27 @@ def add_ingrediants():
 		flash("ingrediants added successfully ", 'success')
 		return "add success ingrediants "
 	return "add ingrediants"
+
+
+@main.route('/add-comment/<int:recipe_id>', methods=['POST', 'GET'])
+def add_comment(recipe_id):
+	if not current_user.is_authenticated:
+		flash('Log in first to visit page', 'warning')
+		return redirect(url_for('auth.login'))
+
+	if requst.method == "POST":
+		content = request.form['content']
+		rating = request.form['rating']
+		recipe_id = recipe_id
+		
+		if len(content) > 100 :
+			flash("content mst be less than 100 characters", 'danger')
+			return redirect(url_for('add_comment'))
+
+		comment = Comment(content=content, rating=rating,recipe_id=int(recipe_id), user_id=current_user.id)
+		db.session.add(comment)
+		db.session.commit()
+
+		flash("comments added successfully ", 'success')
+		return "add success comments "
+	return "add comments"
