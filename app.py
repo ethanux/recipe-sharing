@@ -34,6 +34,8 @@ from main.main import main
 app.register_blueprint(auth, url_prefix='/auth')
 # Registering the main blueprint with the app, with a URL prefix '/home'.
 app.register_blueprint(main, url_prefix='/home')
+
+main.secret_key = app.secret_key
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 main.upload_folder = os.path.join(APP_ROOT, 'main/static/images')
 

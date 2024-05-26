@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, url_for, request, flash, redirect
+from flask import Blueprint, render_template, url_for, request, flash, redirect, session
 from flask_login import current_user
 from models.model import Recipe, Ingrediants, Comment
 from werkzeug.utils import secure_filename
@@ -56,30 +56,69 @@ def add_recipe():
 		# 	return "done"
 
 		recipe = Recipe(title=title, description=description, instructions=instructions, category=category, image=image.filename, user_id=current_user.id)
+		
 		db.session.add(recipe)
 		db.session.commit()
+		session['recipe_id'] = recipe.id
+		session['data'] = {}
 		flash("recipe added successfully ", 'success')
 		return redirect(url_for('main.add_ingrediants'))
 	return render_template('add_recipe.html')
 
 
-@main.route('/add-ingrediants', methods=['POST', 'GET'])
+@main.route('/add-recipe/add-ingrediants', methods=['POST', 'GET'])
 def add_ingrediants():
 	if not current_user.is_authenticated:
 		flash('Log in first to visit page', 'warning')
 		return redirect(url_for('auth.login'))
 
+	try:
+		recipe_id = session['recipe_id']
+	except KeyError:
+		flash('add recipe first before adding ingrediants', 'danger')
+		return	redirect(url_for('main.add_recipe'))
+	
 	if request.method == "POST":
-		item = request.form['title']
-		amount = request.form['description']
-		recipe_id = request.form['recipe_id']
-		ingrediants = Ingrediants(item=item, amount=amount,recipe_id=recipe_id)
-		db.session.add(ingrediants)
-		db.session.commit()
-		flash("ingrediants added successfully ", 'success')
-		return "add success ingrediants "
-	return "add ingrediants"
+		btn = request.form['button']
+		if btn == 'add':
+			item = request.form['item']
+			amount = request.form['amount']
+			if item in ("", None) or amount in ("", None) :
+				flash("Item name And Item amount Cannot be blank", 'warning')
+				return redirect(request.url)	
+			session['data'][item] = amount 
+			session.modified = True
+			print(session)
+			return render_template('add_ingrediants.html', data=session['data'])
+		if btn == 'Save & Continue':
+			data = session['data']
 
+			for item, amount in data.items():
+
+				ingrediants = Ingrediants(item=item, ammount=amount,recipe_id=recipe_id)
+				db.session.add(ingrediants)
+				db.session.commit()
+			flash("ingrediants added successfully ", 'success')
+			session.clear()
+			return redirect(url_for('main.base'))
+		
+	return render_template("add_ingrediants.html", data=session['data'])
+
+@main.route('/add-recipe/add-ingrediants/remove/<string:item>/<string:amount>')
+def  remove_ingrediants(item,amount):
+		removed = False
+		    
+
+		if item in session['data']:
+		    session['data'].pop(item)
+		    removed = True
+		    
+		    # Mark the session as modified to ensure changes are saved
+		if removed:
+		    session.modified = True
+		    flash(f'Items {item} removed successfully!', 'info')
+		    return render_template('add_ingrediants.html', data=session['data'])
+		return redirect(url_for('main.add_ingrediants'))
 
 @main.route('/add-comment/<int:recipe_id>', methods=['POST', 'GET'])
 def add_comment(recipe_id):
