@@ -4,7 +4,7 @@ from ext.ext import db
 from flask_migrate import Migrate
 from flask_login import LoginManager
 from models.model import User
-
+import os 
 # Creating a Flask app instance.
 app = Flask(__name__)
 
@@ -34,7 +34,8 @@ from main.main import main
 app.register_blueprint(auth, url_prefix='/auth')
 # Registering the main blueprint with the app, with a URL prefix '/home'.
 app.register_blueprint(main, url_prefix='/home')
-
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+main.upload_folder = os.path.join(APP_ROOT, 'main/static/images')
 
 @login_manager.user_loader
 def load_user(user_id):

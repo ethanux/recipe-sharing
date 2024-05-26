@@ -1,0 +1,58 @@
+
+{% extends 'base.html'%}
+
+{% block title%}
+<title>add recipe</title>
+
+{% endblock %}
+
+{% block hearder %}
+	<h3 class="d-flex justify-content-center mt-3 "> Add Recipe </h3>
+{% endblock %}
+
+{% block content %}
+	<div class="container ">
+		<form method="post" enctype="multipart/form-data" >
+		<div class="row">
+			
+					<div class="col-sm-12 col-md-6 bg-dark text-light p-5">
+						<div class="mb-3 ">
+					  		<label for="Title" class="form-label">Title</label>
+					  		<input type="text" class="form-control" id="Title" name="title" placeholder="scrumbled eggs" required>
+						</div>
+						<hr style="border-color: white;">
+						
+						<label for="Category" class="form-label">Category</label>
+						<select class="form-select w-100" aria-label="Category" id="Category" name="category" required>
+						  <option value="1" selected >Breakfast</option>
+						  <option value="2">Brunch</option>
+						  <option value="3">Dinner</option>
+						  <option value="3">Supper</option>
+						  <option value="3">Disert</option>
+						  <option value="3">Snack</option>
+						</select>
+						<hr style="border-color:white;">
+						<div class="mb-3">
+					  		<label for="img" class="form-label">Image</label>
+					  		<input class="form-control" type="file" id="img" name="image" required>
+						</div>
+						
+					</div>
+					<div class="col-sm-12 col-md-6 bg-light p-5">
+						<div class="mb-3">
+					  		<label for="Description" class="form-label">Description</label>
+					  		<textarea class="form-control" id="Description" rows="4" name="description" placeholder="Learn to cook scrumbled Eggs under 5 mins"></textarea>
+						</div>
+						<div class="mb-3">
+					  		<label for="Instructions" class="form-label">Instructions</label>
+					  		<textarea class="form-control" id="Instructions" rows="7" name="instructions" placeholder="Crack 2 large eggs into a medium-sized bowl, Use a whisk or fork to beat the eggs until the yolks and whites are fully combined and the mixture is slightly frothy,Place a non-stick skillet or frying pan over medium-low heat, Add 1 tablespoon of butter or oil to the pan and let it melt and coat the bottom of the pan,Pour the beaten eggs into the pan,Let the eggs sit for a few seconds without stirring, allowing the edges to set slightly."></textarea>
+						</div>
+						<div class="mb-3">
+					  		<input class="btn btn-info" type="submit" value="Save & Continue">
+					  		
+						</div>
+					</div>
+			</div>
+		</form>
+	</div>
+{% endblock %}
