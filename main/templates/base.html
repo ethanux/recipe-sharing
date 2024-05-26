@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+	<title></title>
+</head>
+<body>
+
+<div class="bg-dark " >
+	<ul class="nav nav-pills nav-fill p-3">
+	  <li class="nav-item">
+	    <a class="nav-link active" aria-current="page" href="#">Home</a>
+	  </li>
+	  <li class="nav-item">
+	    <a class="nav-link text-white" href="#">Find Recipe</a>
+	  </li>
+	  <li class="nav-item">
+	    <a class="nav-link text-white" href="#">Add Recipes</a>
+	  </li>
+
+	  {% if not current_user.is_authenticated %}
+	  <li class="nav-item">
+	    <a class="nav-link text-white" href="{{url_for('auth.login')}}">Log In</a>
+	  </li>
+	  {% else %}
+	  <li class="nav-item">
+	    <a class="nav-link text-white" href="{{url_for('auth.logout')}}">Sign Out</a>
+	  </li>
+	{% endif %}
+
+	  <li class="nav-item">
+	    <a class="nav-link text-white" href="#" tabindex="-1" aria-disabled="true">Profile</a>
+	  </li>
+	</ul>
+
+</div>
+
+<h3 class="d-flex justify-content-center mt-3">Share Recipe </h3>
+
+<hr style="border: 2px solid lightblue;">
+
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

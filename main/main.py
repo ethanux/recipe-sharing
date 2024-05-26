@@ -10,7 +10,7 @@ def add_recipe():
 		flash('Logg in first to visit page', 'warning')
 		return redirect(url_for('auth.login'))
 
-	if requst.method == "POST":
+	if request.method == "POST":
 		title = request.form['title']
 		description = request.form['description']
 		instructions = request.form['instructions']
@@ -30,7 +30,7 @@ def add_ingrediants():
 		flash('Log in first to visit page', 'warning')
 		return redirect(url_for('auth.login'))
 
-	if requst.method == "POST":
+	if request.method == "POST":
 		item = request.form['title']
 		amount = request.form['description']
 		recipe_id = request.form['recipe_id']
@@ -48,7 +48,7 @@ def add_comment(recipe_id):
 		flash('Log in first to visit page', 'warning')
 		return redirect(url_for('auth.login'))
 
-	if requst.method == "POST":
+	if request.method == "POST":
 		content = request.form['content']
 		rating = request.form['rating']
 		recipe_id = recipe_id
@@ -64,3 +64,7 @@ def add_comment(recipe_id):
 		flash("comments added successfully ", 'success')
 		return "add success comments here"
 	return "add comments"
+
+@main.route('/base')
+def base():
+	return render_template('base.html')
