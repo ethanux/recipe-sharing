@@ -150,6 +150,15 @@ def find_recipe():
 	print(recipes)
 	return render_template("find_recipe.html", recipes=recipes, path=main.upload_folder)
 
+@main.route('/find-recipe/view-recipe/<int:id>')
+def view_recipe(id):
+	recipe = Recipe.query.filter_by(id=id).first()
+	if recipe:
+		print(recipe.ingredients)
+		return render_template('view_recipe.html', recipe=recipe)
+	else:
+		flash('recipe not found ', 'danger')
+		return redirect(request.url)
 
 
 
