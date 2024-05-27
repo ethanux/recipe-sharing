@@ -143,6 +143,16 @@ def add_comment(recipe_id):
 		return "add success comments here"
 	return "add comments"
 
+
+@main.route('/find-recipe')
+def find_recipe():
+	recipes = Recipe.query.all()
+	print(recipes)
+	return render_template("find_recipe.html", recipes=recipes, path=main.upload_folder)
+
+
+
+
 @main.route('/base')
 def base():
 	return render_template('base.html')
