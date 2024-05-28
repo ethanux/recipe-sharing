@@ -6,6 +6,35 @@
 
 {% endblock %}
 
+{% block link %}
+	<ul class="nav nav-pills nav-fill p-3">
+	  <li class="nav-item">
+	    <a class="nav-link text-white" aria-current="page" href="{{url_for('main.base')}}">Home</a>
+	  </li>
+	  <li class="nav-item">
+	    <a class="nav-link text-white" href="{{url_for('main.find_recipe', filters='all')}}">Find Recipe</a>
+	  </li>
+	  <li class="nav-item">
+	    <a class="nav-link active" href="{{url_for('main.add_recipe')}}">Add Recipes</a>
+	  </li>
+
+	  {% if not current_user.is_authenticated %}
+	  <li class="nav-item">
+	    <a class="nav-link text-white" href="{{url_for('auth.login')}}">Log In</a>
+	  </li>
+	  {% else %}
+	  <li class="nav-item">
+	    <a class="nav-link text-white" href="{{url_for('auth.logout')}}">Sign Out</a>
+	  </li>
+	{% endif %}
+
+	  <li class="nav-item">
+	    <a class="nav-link text-white" href="#" tabindex="-1" aria-disabled="true">Profile</a>
+	  </li>
+
+	</ul>
+	{% endblock %}
+
 {% block hearder %}
 	<h3 class="d-flex justify-content-center mt-3 "> Add Recipe </h3>
 {% endblock %}

@@ -12,15 +12,16 @@
 	<title></title>
 	{% endblock%}
 </head>
-<body>
+<body style="font-family: cursive; font-size: 20px; font-weight: bold;">
 
 <div class="bg-dark " >
+	{% block link %}
 	<ul class="nav nav-pills nav-fill p-3">
 	  <li class="nav-item">
 	    <a class="nav-link active" aria-current="page" href="{{url_for('main.base')}}">Home</a>
 	  </li>
 	  <li class="nav-item">
-	    <a class="nav-link text-white" href="{{url_for('main.find_recipe')}}">Find Recipe</a>
+	    <a class="nav-link text-white" href="{{url_for('main.find_recipe', filters='all')}}">Find Recipe</a>
 	  </li>
 	  <li class="nav-item">
 	    <a class="nav-link text-white" href="{{url_for('main.add_recipe')}}">Add Recipes</a>
@@ -39,8 +40,9 @@
 	  <li class="nav-item">
 	    <a class="nav-link text-white" href="#" tabindex="-1" aria-disabled="true">Profile</a>
 	  </li>
-	</ul>
 
+	</ul>
+	{% endblock %}
 </div>
 
 {% block hearder%}
@@ -61,11 +63,12 @@
                     </div>
                 {% endif %}
             {% endwith %}
-<hr style="border: 2px solid lightblue;">
+<hr style="border: 1px solid lightblue;">
 
 {% block content %}
 
 {% endblock %}
+	
 
     <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

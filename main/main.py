@@ -4,13 +4,10 @@ from models.model import Recipe, Ingrediants, Comment
 from werkzeug.utils import secure_filename
 from ext.ext import db
 import os
+
 main = Blueprint("main", __name__, template_folder="templates", static_folder="static")
 
-
-
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf', 'txt'}
-
-
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -19,16 +16,11 @@ def file_upload():
 	if not os.path.exists(main.upload_folder):
 		os.makedirs(main.upload_folder)
 
-	# Define allowed file extensions
-
-
-
 @main.route('/add-recipe', methods=['POST', 'GET'])
 def add_recipe():
 	if not current_user.is_authenticated:
 		flash('Logg in first to visit page', 'warning')
 		return redirect(url_for('auth.login'))
-
 	if request.method == "POST":
 		title = request.form['title']
 		description = request.form['description']
@@ -37,9 +29,7 @@ def add_recipe():
 		if 'image' not in request.files:
 			flash('No file part', 'danger')
 			return redirect(request.url)
-        
 		image = request.files['image']
-        
         # If user does not select a file, the browser submits an empty file without a filename
 		if image.filename == '':
 			flash('No selected file', 'danger')
@@ -48,15 +38,10 @@ def add_recipe():
 		if not image and not allowed_file(image.filename):
 			flash('File type not allowed', 'error')
 			return redirect(request.url)
-
 		filename = secure_filename(image.filename)
 		image.save(os.path.join(main.upload_folder, filename))
 		flash('image successfully uploaded', 'success')
-		# else:
-		# 	return "done"
-
 		recipe = Recipe(title=title, description=description, instructions=instructions, category=category, image=image.filename, user_id=current_user.id)
-		
 		db.session.add(recipe)
 		db.session.commit()
 		session['recipe_id'] = recipe.id
@@ -71,13 +56,11 @@ def add_ingrediants():
 	if not current_user.is_authenticated:
 		flash('Log in first to visit page', 'warning')
 		return redirect(url_for('auth.login'))
-
 	try:
 		recipe_id = session['recipe_id']
 	except KeyError:
 		flash('add recipe first before adding ingrediants', 'danger')
 		return	redirect(url_for('main.add_recipe'))
-	
 	if request.method == "POST":
 		btn = request.form['button']
 		if btn == 'add':
@@ -92,27 +75,21 @@ def add_ingrediants():
 			return render_template('add_ingrediants.html', data=session['data'])
 		if btn == 'Save & Continue':
 			data = session['data']
-
 			for item, amount in data.items():
-
 				ingrediants = Ingrediants(item=item, ammount=amount,recipe_id=recipe_id)
 				db.session.add(ingrediants)
 				db.session.commit()
 			flash("ingrediants added successfully ", 'success')
 			session.clear()
 			return redirect(url_for('main.base'))
-		
 	return render_template("add_ingrediants.html", data=session['data'])
 
 @main.route('/add-recipe/add-ingrediants/remove/<string:item>/<string:amount>')
 def  remove_ingrediants(item,amount):
 		removed = False
-		    
-
 		if item in session['data']:
 		    session['data'].pop(item)
 		    removed = True
-		    
 		    # Mark the session as modified to ensure changes are saved
 		if removed:
 		    session.modified = True
@@ -125,30 +102,33 @@ def add_comment(recipe_id):
 	if not current_user.is_authenticated:
 		flash('Log in first to visit page', 'warning')
 		return redirect(url_for('auth.login'))
-
 	if request.method == "POST":
 		content = request.form['content']
 		rating = request.form['rating']
 		recipe_id = recipe_id
-		
 		if len(content) > 100 :
 			flash("content mst be less than 100 characters", 'danger')
 			return redirect(url_for('add_comment'))
-
 		comment = Comment(content=content, rating=rating,recipe_id=int(recipe_id), user_id=current_user.id)
 		db.session.add(comment)
 		db.session.commit()
-
 		flash("comments added successfully ", 'success')
 		return "add success comments here"
 	return "add comments"
 
 
-@main.route('/find-recipe')
-def find_recipe():
-	recipes = Recipe.query.all()
-	print(recipes)
-	return render_template("find_recipe.html", recipes=recipes, path=main.upload_folder)
+@main.route('/find-recipe/<string:filters>')
+def find_recipe(filters):
+	if filters == 'all':
+		recipes = Recipe.query.all()
+		return render_template("find_recipe.html", recipes=recipes, path=main.upload_folder)
+	elif filters not in ['Breakfast','Brunch', 'Lunch','Dinner','Supper', 'Disert', 'Snack']:
+		flash('Invalid filter value ', 'danger')
+		recipes = Recipe.query.all()
+		return render_template("find_recipe.html", recipes=recipes, path=main.upload_folder)
+	else:
+		recipes = Recipe.query.filter_by(category=filters).all()
+		return render_template("find_recipe.html", recipes=recipes, path=main.upload_folder, category=filters)
 
 @main.route('/find-recipe/view-recipe/<int:id>')
 def view_recipe(id):
@@ -159,8 +139,6 @@ def view_recipe(id):
 	else:
 		flash('recipe not found ', 'danger')
 		return redirect(request.url)
-
-
 
 @main.route('/base')
 def base():

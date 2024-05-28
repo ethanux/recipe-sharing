@@ -9,36 +9,57 @@
 <h3 class="d-flex justify-content-center mt-3 "> Find Recipe </h3>
 {% endblock %}
 
+{% block link %}
+	<ul class="nav nav-pills nav-fill p-3">
+	  <li class="nav-item">
+	    <a class="nav-link text-white" aria-current="page" href="{{url_for('main.base')}}">Home</a>
+	  </li>
+	  <li class="nav-item">
+	    <a class="nav-link active" href="{{url_for('main.find_recipe', filters='all')}}">Find Recipe</a>
+	  </li>
+	  <li class="nav-item">
+	    <a class="nav-link text-white" href="{{url_for('main.add_recipe')}}">Add Recipes</a>
+	  </li>
+
+	  {% if not current_user.is_authenticated %}
+	  <li class="nav-item">
+	    <a class="nav-link text-white" href="{{url_for('auth.login')}}">Log In</a>
+	  </li>
+	  {% else %}
+	  <li class="nav-item">
+	    <a class="nav-link text-white" href="{{url_for('auth.logout')}}">Sign Out</a>
+	  </li>
+	{% endif %}
+
+	  <li class="nav-item">
+	    <a class="nav-link text-white" href="#" tabindex="-1" aria-disabled="true">Profile</a>
+	  </li>
+
+	</ul>
+	{% endblock %}
 
 {% block content %}
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Filter by :</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse d-flex justify-content-between" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Category
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="#">Breakfast</a></li>
-            <li><a class="dropdown-item" href="#">Brunch</a></li>
-            <li><a class="dropdown-item" href="#">Lunch</a></li>
-            <li><a class="dropdown-item" href="#">Dinner</a></li>
-            <li><a class="dropdown-item" href="#">Supper</a></li>
-            <li><a class="dropdown-item" href="#">Disert</a></li>
-            <li><a class="dropdown-item" href="#">Snack</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
-          </ul>
-        </li>
-      </ul>
+<nav class="navbar navbar-expand-lg navbar-light bg-dark mt-0 pt-0">
+  <div class="container-fluid mt-0 pt-0">
+    <a class="navbar-brand text-light" href="#">Filter by :</a>
+   <div class="dropdown show">
+  <a class="btn btn-secondary dropdown-toggle mt-1" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    {% if category %} {{category}} {% else %}Choose filter{% endif %}
+  </a>
+
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+     <a class="dropdown-item" href="{{url_for('main.find_recipe', filters='all')}}">reset
+</a>
+    <a class="dropdown-item" href="{{url_for('main.find_recipe', filters='Breakfast')}}">Breakfast
+</a>
+    <a class="dropdown-item" href="{{url_for('main.find_recipe', filters='Brunch')}}">Brunch</a>
+    <a class="dropdown-item" href="{{url_for('main.find_recipe', filters='Lunch')}}">Lunch</a>
+    <a class="dropdown-item" href="{{url_for('main.find_recipe', filters='Dinner')}}">Dinner</a>
+    <a class="dropdown-item" href="{{url_for('main.find_recipe', filters='Supper')}}">Supper</a>
+    <a class="dropdown-item" href="{{url_for('main.find_recipe', filters='Disert')}}">Disert</a>
+    <a class="dropdown-item" href="{{url_for('main.find_recipe', filters='Snack')}}">Snack</a>
+  </div>
+</div>
       <form class="d-flex">
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-success" type="submit">Search</button>
@@ -50,11 +71,20 @@
 <div class="container p-0 d-flex flex-wrap">
 	{% if recipes %}
 	{% for recipe in recipes %}
-	<a href="{{url_for('main.view_recipe', id=recipe.id)}}" class="col-sm-12 col-md-6 col-lg-3">
-		<div class="card m-1 " >
+	<a href="{{url_for('main.view_recipe', id=recipe.id)}} " class="col-sm-12 col-md-6 col-lg-3 shadow p-3 mb-5 bg-white rounded mx-3 mt-4 text-dark" style="text-decoration: none; font-size: 20px; font-family: cursive; font-weight: bold;">
+		<div class="card m-1 " style="border:none;" >
 		  <img src="{{url_for('main.static', filename='images/'+recipe.image)}}" class="card-img-top" alt="...">
-		  <div class="card-body p-0 m-0">
-		    <p class="card-text pt-0 mt-0">{{recipe.title}}</p>
+		  <div class="card-body p-0 m-0 d-flex justify-content-between mt-3">
+		    <p class="card-text pt-0 mt-0 mb-0">{{recipe.title}}</p>
+		    <div class="d-flex justify-content-end" style="font-size: 14px;">
+		    	<i class="fa fa-star text-warning" aria-hidden="true"></i>
+		    	<i class="fa fa-star text-warning" aria-hidden="true"></i>
+		    	<i class="fa fa-star text-warning" aria-hidden="true"></i>
+				<i class="fa fa-star text-warning" aria-hidden="true"></i>
+				<i class="fa fa-star text-warning" aria-hidden="true"></i>
+
+
+		    </div>
 		  </div>
 		</div>
 		
