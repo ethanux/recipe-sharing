@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, url_for, request, flash, redirect, session
 from flask_login import current_user
-from models.model import Recipe, Ingrediants, Comment
+from models.model import Recipe, Ingrediants, Comment, User
 from werkzeug.utils import secure_filename
 from ext.ext import db
 import os
@@ -132,6 +132,9 @@ def find_recipe(filters):
 
 @main.route('/find-recipe/view-recipe/<int:id>')
 def view_recipe(id):
+	if not current_user.is_authenticated:
+		flash('Please log in to visit this page', 'warning')
+		return redirect(request.url)
 	recipe = Recipe.query.filter_by(id=id).first()
 	if recipe:
 		print(recipe.ingredients)
@@ -139,6 +142,31 @@ def view_recipe(id):
 	else:
 		flash('recipe not found ', 'danger')
 		return redirect(request.url)
+
+
+@main.route('/profile', methods = ['POST', "GET"])
+def profile():
+	if not current_user.is_authenticated:
+		flash('Please log in to visit this page', 'warning')
+		return redirect(request.url)
+	if request.method == 'POST':
+		username = request.form['username'] 
+		password = request.form['password']
+
+		if len(password) >= 8:
+			try:
+				str(username)
+				user = User.query.filter_by(id=current_user.id).first()
+				user.username = username
+				user.password = password
+				db.session.commit()
+				flash('INformation updated successfuly', 'success')
+				
+			except Exception as e:
+				raise e
+	recipes = Recipe.query.filter_by(user_id=current_user.id).all()
+	
+	return render_template('profile.html', recipes=recipes)
 
 @main.route('/base')
 def base():
